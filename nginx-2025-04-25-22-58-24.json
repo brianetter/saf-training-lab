@@ -1,0 +1,358 @@
+{
+    "platform": {
+        "name": "debian",
+        "release": "12.10",
+        "target_id": "da39a3ee-5e6b-5b0d-b255-bfef95601890"
+    },
+    "profiles": [
+        {
+            "name": "my_nginx",
+            "version": "0.1.0",
+            "sha256": "204eaf1ec8cca7ce5a4e787d6268e1f2de723fa09f4502b6df12dfe0e03cf63d",
+            "title": "InSpec Profile",
+            "maintainer": "The Authors",
+            "summary": "An InSpec Compliance Profile",
+            "license": "Apache-2.0",
+            "copyright": "The Authors",
+            "copyright_email": "you@example.com",
+            "supports": [
+                {
+                    "platform": "os"
+                }
+            ],
+            "attributes": [
+                {
+                    "name": "nginx_version",
+                    "options": {
+                        "type": "String",
+                        "value": "1.27.0"
+                    }
+                },
+                {
+                    "name": "nginx_modules",
+                    "options": {
+                        "type": "Array",
+                        "value": [
+                            "http_ssl",
+                            "stream_ssl",
+                            "mail_ssl"
+                        ]
+                    }
+                },
+                {
+                    "name": "admin_users",
+                    "options": {
+                        "type": "Array",
+                        "value": [
+                            "admin"
+                        ]
+                    }
+                }
+            ],
+            "groups": [
+                {
+                    "id": "controls/example.rb",
+                    "controls": [
+                        "nginx-version",
+                        "nginx-modules",
+                        "nginx-config-file",
+                        "nginx-conf-perms",
+                        "nginx-shell-access",
+                        "nginx-interview",
+                        "Requirement 6"
+                    ]
+                }
+            ],
+            "controls": [
+                {
+                    "id": "nginx-version",
+                    "title": "NGINX version",
+                    "desc": "The required version of NGINX should be installed.",
+                    "descriptions": [
+                        {
+                            "label": "default",
+                            "data": "The required version of NGINX should be installed."
+                        }
+                    ],
+                    "impact": 1.0,
+                    "refs": [],
+                    "tags": {},
+                    "code": "control 'nginx-version' do\n  impact 1.0\n  title 'NGINX version'\n  desc 'The required version of NGINX should be installed.'\n  describe nginx do\n    its('version') { should cmp >= input('nginx_version') }\n    # its('version') { should cmp >= '1.27.0' }\n  end\nend\n",
+                    "source_location": {
+                        "line": 1,
+                        "ref": "my_nginx/controls/example.rb"
+                    },
+                    "waiver_data": {},
+                    "results": [
+                        {
+                            "status": "passed",
+                            "code_desc": "Nginx Environment version is expected to cmp >= \"1.27.0\"",
+                            "run_time": 0.000428458,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "resource_class": "nginx",
+                            "resource_params": "[]",
+                            "resource_id": "/usr/sbin/nginx"
+                        }
+                    ],
+                    "status": "passed"
+                },
+                {
+                    "id": "nginx-modules",
+                    "title": "NGINX modules",
+                    "desc": "The required NGINX modules should be installed",
+                    "descriptions": [
+                        {
+                            "label": "default",
+                            "data": "The required NGINX modules should be installed"
+                        }
+                    ],
+                    "impact": 1.0,
+                    "refs": [],
+                    "tags": {},
+                    "code": "control 'nginx-modules' do\n  impact 1.0\n  title 'NGINX modules'\n  desc 'The required NGINX modules should be installed'\n\n  nginx_modules = input('nginx_modules')\n\n  describe nginx do\n    # its('modules') { should include 'http_ssl' }\n    # its('modules') { should include 'stream_ssl' }\n    # its('modules') { should include 'mail_ssl' }\n    nginx_modules.each do |current_module|\n      its('modules') { should include current_module }\n    end\n  end\nend\n",
+                    "source_location": {
+                        "line": 11,
+                        "ref": "my_nginx/controls/example.rb"
+                    },
+                    "waiver_data": {},
+                    "results": [
+                        {
+                            "status": "passed",
+                            "code_desc": "Nginx Environment modules is expected to include \"http_ssl\"",
+                            "run_time": 0.00404511,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "resource_class": "nginx",
+                            "resource_params": "[]",
+                            "resource_id": "/usr/sbin/nginx"
+                        },
+                        {
+                            "status": "passed",
+                            "code_desc": "Nginx Environment modules is expected to include \"stream_ssl\"",
+                            "run_time": 0.000132948,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "resource_class": "nginx",
+                            "resource_params": "[]",
+                            "resource_id": "/usr/sbin/nginx"
+                        },
+                        {
+                            "status": "passed",
+                            "code_desc": "Nginx Environment modules is expected to include \"mail_ssl\"",
+                            "run_time": 0.000116176,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "resource_class": "nginx",
+                            "resource_params": "[]",
+                            "resource_id": "/usr/sbin/nginx"
+                        }
+                    ],
+                    "status": "passed"
+                },
+                {
+                    "id": "nginx-config-file",
+                    "title": "NXINX configuration file",
+                    "desc": "The NGINX config file should exist as a file",
+                    "descriptions": [
+                        {
+                            "label": "default",
+                            "data": "The NGINX config file should exist as a file"
+                        }
+                    ],
+                    "impact": 1.0,
+                    "refs": [],
+                    "tags": {},
+                    "code": "control 'nginx-config-file' do\n  impact 1.0\n  title 'NXINX configuration file'\n  desc 'The NGINX config file should exist as a file'\n  describe file('/etc/nginx/nginx.conf') do\n    it { should be_file }\n  end\nend\n",
+                    "source_location": {
+                        "line": 28,
+                        "ref": "my_nginx/controls/example.rb"
+                    },
+                    "waiver_data": {},
+                    "results": [
+                        {
+                            "status": "passed",
+                            "code_desc": "File /etc/nginx/nginx.conf is expected to be file",
+                            "run_time": 0.130167466,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "resource_class": "file",
+                            "resource_params": "[\"/etc/nginx/nginx.conf\"]",
+                            "resource_id": "/etc/nginx/nginx.conf"
+                        }
+                    ],
+                    "status": "passed"
+                },
+                {
+                    "id": "nginx-conf-perms",
+                    "title": "NGINX configuration",
+                    "desc": "The NGINX config file should be owned by root, be writable only by owner, and not writeable or and readable by others.",
+                    "descriptions": [
+                        {
+                            "label": "default",
+                            "data": "The NGINX config file should be owned by root, be writable only by owner, and not writeable or and readable by others."
+                        }
+                    ],
+                    "impact": 1.0,
+                    "refs": [],
+                    "tags": {},
+                    "code": "control 'nginx-conf-perms' do\n  impact 1.0\n  title 'NGINX configuration'\n  desc 'The NGINX config file should be owned by root, be writable only by owner, and not writeable or and readable by others.'\n  describe file('/etc/nginx/nginx.conf') do\n    it { should be_owned_by 'root' }\n    it { should be_grouped_into 'root' }\n    it { should_not be_readable.by('others') }\n    it { should_not be_writable.by('others') }\n    it { should_not be_executable.by('others') }\n  end\nend\n",
+                    "source_location": {
+                        "line": 37,
+                        "ref": "my_nginx/controls/example.rb"
+                    },
+                    "waiver_data": {},
+                    "results": [
+                        {
+                            "status": "passed",
+                            "code_desc": "File /etc/nginx/nginx.conf is expected to be owned by \"root\"",
+                            "run_time": 0.009604674,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "resource_class": "file",
+                            "resource_params": "[\"/etc/nginx/nginx.conf\"]",
+                            "resource_id": "/etc/nginx/nginx.conf"
+                        },
+                        {
+                            "status": "passed",
+                            "code_desc": "File /etc/nginx/nginx.conf is expected to be grouped into \"root\"",
+                            "run_time": 0.0090556,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "resource_class": "file",
+                            "resource_params": "[\"/etc/nginx/nginx.conf\"]",
+                            "resource_id": "/etc/nginx/nginx.conf"
+                        },
+                        {
+                            "status": "failed",
+                            "code_desc": "File /etc/nginx/nginx.conf is expected not to be readable by others",
+                            "run_time": 0.061964713,
+                            "start_time": "2025-04-25T22:58:33+00:00",
+                            "message": "expected File /etc/nginx/nginx.conf not to be readable by others",
+                            "resource_class": "file",
+                            "resource_params": "[\"/etc/nginx/nginx.conf\"]",
+                            "resource_id": "/etc/nginx/nginx.conf"
+                        },
+                        {
+                            "status": "passed",
+                            "code_desc": "File /etc/nginx/nginx.conf is expected not to be writable by others",
+                            "run_time": 0.000283158,
+                            "start_time": "2025-04-25T22:58:34+00:00",
+                            "resource_class": "file",
+                            "resource_params": "[\"/etc/nginx/nginx.conf\"]",
+                            "resource_id": "/etc/nginx/nginx.conf"
+                        },
+                        {
+                            "status": "passed",
+                            "code_desc": "File /etc/nginx/nginx.conf is expected not to be executable by others",
+                            "run_time": 0.00011848,
+                            "start_time": "2025-04-25T22:58:34+00:00",
+                            "resource_class": "file",
+                            "resource_params": "[\"/etc/nginx/nginx.conf\"]",
+                            "resource_id": "/etc/nginx/nginx.conf"
+                        }
+                    ],
+                    "status": "failed"
+                },
+                {
+                    "id": "nginx-shell-access",
+                    "title": "NGINX shell access",
+                    "desc": "NGINX shell access should be restricted to admin users",
+                    "descriptions": [
+                        {
+                            "label": "default",
+                            "data": "NGINX shell access should be restricted to admin users"
+                        }
+                    ],
+                    "impact": 1.0,
+                    "refs": [],
+                    "tags": {},
+                    "code": "control 'nginx-shell-access' do\n  impact 1.0\n  title 'NGINX shell access'\n  desc 'NGINX shell access should be restricted to admin users'\n  describe users.shells(/bash/).usernames do\n    it { should be_in input('admin_users') }\n  end\nend\n",
+                    "source_location": {
+                        "line": 50,
+                        "ref": "my_nginx/controls/example.rb"
+                    },
+                    "waiver_data": {},
+                    "results": [
+                        {
+                            "status": "failed",
+                            "code_desc": "[\"root\"] is expected to be in \"admin\"",
+                            "run_time": 0.000281003,
+                            "start_time": "2025-04-25T22:58:34+00:00",
+                            "message": "expected `[\"root\"]` to be in the list: `[\"admin\"]` \nDiff:\n [\"root\"]",
+                            "resource_class": "Object",
+                            "resource_params": "[]",
+                            "resource_id": ""
+                        }
+                    ],
+                    "status": "failed"
+                },
+                {
+                    "id": "nginx-interview",
+                    "title": "NGINX interview",
+                    "desc": "NGINX admins should have documentation on security procedures",
+                    "descriptions": [
+                        {
+                            "label": "default",
+                            "data": "NGINX admins should have documentation on security procedures"
+                        }
+                    ],
+                    "impact": 1.0,
+                    "refs": [],
+                    "tags": {},
+                    "code": "control 'nginx-interview' do\n  impact 1.0\n  title 'NGINX interview'\n  desc 'NGINX admins should have documentation on security procedures'\n  describe \"Manual Review\" do\n    skip \"This control must be manually reviewed.\"\n  end\nend\n",
+                    "source_location": {
+                        "line": 59,
+                        "ref": "my_nginx/controls/example.rb"
+                    },
+                    "waiver_data": {},
+                    "results": [
+                        {
+                            "status": "skipped",
+                            "code_desc": "Manual Review",
+                            "run_time": 1.0931e-05,
+                            "start_time": "2025-04-25T22:58:34+00:00",
+                            "resource": "",
+                            "skip_message": "This control must be manually reviewed.",
+                            "resource_class": "Object",
+                            "resource_params": "[]",
+                            "resource_id": "Manual Review"
+                        }
+                    ],
+                    "status": "not_reviewed"
+                },
+                {
+                    "id": "Requirement 6",
+                    "title": "Checking that /etc/nginx does not return empty.",
+                    "desc": "Let's do this the concise way.",
+                    "descriptions": [
+                        {
+                            "label": "default",
+                            "data": "Let's do this the concise way."
+                        }
+                    ],
+                    "impact": 1.0,
+                    "refs": [],
+                    "tags": {},
+                    "code": "control 'Requirement 6' do\n  impact 1.0\n  title 'Checking that /etc/nginx does not return empty.'\n  desc 'Let\\'s do this the concise way.'\n  describe \"The /etc/nginx directory\" do\n    subject { command('ls -al').stdout.strip }\n    it { should_not be_empty }\n  end\nend\n",
+                    "source_location": {
+                        "line": 68,
+                        "ref": "my_nginx/controls/example.rb"
+                    },
+                    "waiver_data": {},
+                    "results": [
+                        {
+                            "status": "passed",
+                            "code_desc": "The /etc/nginx directory is expected not to be empty",
+                            "run_time": 0.06105994,
+                            "start_time": "2025-04-25T22:58:34+00:00",
+                            "resource_class": "Object",
+                            "resource_params": "[]",
+                            "resource_id": "The /etc/nginx directory"
+                        }
+                    ],
+                    "status": "passed"
+                }
+            ],
+            "status": "loaded",
+            "status_message": ""
+        }
+    ],
+    "statistics": {
+        "duration": 0.282326618
+    },
+    "version": "5.22.72"
+}

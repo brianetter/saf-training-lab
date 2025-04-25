@@ -64,3 +64,57 @@ control 'nginx-interview' do
     skip "This control must be manually reviewed."
   end
 end
+
+control 'Requirement 6' do
+  impact 1.0
+  title 'Checking that /etc/nginx does not return empty.'
+  desc 'Let\'s do this the concise way.'
+  describe "The /etc/nginx directory" do
+    subject { command('ls -al').stdout.strip }
+    it { should_not be_empty }
+  end
+end
+
+
+
+
+
+
+# Extra test code below this line
+# describe file('/etc/nginx/nginx.conf') do
+#   it { should be_file }
+# end
+
+# describe file('/etc/nginx/nginx.conf') do
+#   it 'should be a file' do
+#     expect(subject).to(be_file)
+#   end
+# end
+
+# describe 'I can make this any string I want!' do
+#   subject { file('/etc/nginx/nginx.conf') }
+#   it 'should be a file' do
+#     expect(subject).to(be_file)
+#   end
+# end
+
+# non_admin_users = users.shells(/bash/).usernames
+
+# describe "Shell access for non-admin users" do
+#   it "should be removed." do
+    
+#     failure_message = "These non-admin should not have shell acess: #{ non_admin_users.join(", ") }"
+
+#     expect(non_admin_users).to eq(input('admin_users')), failure_message
+#   end
+# end
+
+# bad_users = inspec.shadow.where { password != "*" && password != "!" && password != /\$6\$/ }.users
+
+# describe 'Password hashes in /etc/shadow' do
+#   it 'should only contain SHA512 hashes' do
+#     failure_message = "Users without SHA512 hashes: #{ bad_users.join(', ') }"
+#     expect(bad_users).to be_empty, failure_message
+#   end
+# end
+
